@@ -69,6 +69,68 @@
     }
   </script>
   <!-- ===== END Upload Gambar ===== -->
+<<!-- ===== Upload Gambar ke Firebase Storage ===== -->
+  <div style="margin:20px; text-align:center;">
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Upload</button>
+  </div>
+  <div id="preview" style="margin:20px; text-align:center;"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+
+    // Konfigurasi Firebase (punya kamu)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCG-fNvUtWZGh_K8ykhJLiVvZH_fTRej54",
+      authDomain: "reportactivity-ca50.firebaseapp.com",
+      projectId: "reportactivity-ca50",
+      storageBucket: "reportactivity-ca50.appspot.com",
+      messagingSenderId: "106234023407",
+      appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    // Anonymous login
+    signInAnonymously(auth)
+      .then(() => console.log("✅ Signed in anonymous"))
+      .catch((error) => console.error("❌ Auth error", error));
+
+    // Fungsi upload
+    async function uploadImage() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        alert("Pilih file dulu!");
+        return;
+      }
+
+      const storageRef = ref(storage, "uploads/" + file.name);
+
+      try {
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        console.log("✅ File URL:", url);
+
+        // tampilkan gambar
+        const img = document.createElement("img");
+        img.src = url;
+        img.width = 200;
+        document.getElementById("preview").appendChild(img);
+
+      } catch (e) {
+        console.error("❌ Upload gagal:", e);
+      }
+    }
+  </script>
+  <!-- ===== END Upload Gambar ===== -->
+
+</body>
+</html>
 
   <style>
     body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
