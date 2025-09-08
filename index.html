@@ -11,33 +11,37 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   
   <script type="module">
+    // 1. Import Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // Konfigurasi Firebase (punya kamu)
+    // 2. Firebase config (ISI DENGAN PUNYAMU DARI FIREBASE CONSOLE)
     const firebaseConfig = {
-      apiKey: "AIzaSyCG-fNvUtWZGh_K8ykhJLiVvZH_fTRej54",
-      authDomain: "reportactivity-ca50.firebaseapp.com",
-      projectId: "reportactivity-ca50",
-      storageBucket: "reportactivity-ca50.appspot.com",
-      messagingSenderId: "106234023407",
-      appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+      apiKey: "API_KEY_KAMU",
+      authDomain: "PROJECT_ID.firebaseapp.com",
+      projectId: "PROJECT_ID",
+      storageBucket: "PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
     };
 
-    // Init Firebase
+    // 3. Init Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const storage = getStorage(app);
+    const db = getFirestore(app);
 
-    // Anonymous login
+    // 4. Login anonim
     signInAnonymously(auth)
-      .then(() => console.log("✅ Signed in anonymous"))
-      .catch((error) => console.error("❌ Auth error", error));
+      .then(() => console.log("✅ Login anonymous sukses"))
+      .catch((err) => console.error("❌ Login gagal:", err));
 
-    // Fungsi upload
-    async function uploadImage() {
-      const file = document.getElementById("fileInput").files[0];
+    // 5. Fungsi upload
+    window.uploadFile = async function () {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
       if (!file) {
         alert("Pilih file dulu!");
         return;
@@ -46,9 +50,17 @@
       const storageRef = ref(storage, "uploads/" + file.name);
 
       try {
+        // Upload ke storage
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
         console.log("✅ File URL:", url);
+
+        // Simpan metadata ke Firestore
+        await addDoc(collection(db, "uploads"), {
+          name: file.name,
+          url: url,
+          created: new Date()
+        });
 
         // tampilkan gambar
         const img = document.createElement("img");
@@ -59,9 +71,8 @@
       } catch (e) {
         console.error("❌ Upload gagal:", e);
       }
-    }
+    };
   </script>
-  <!-- ===== END Upload Gambar ===== -->
 
   <style>
     body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
