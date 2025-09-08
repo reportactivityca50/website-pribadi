@@ -9,7 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
   <!-- SheetJS untuk Export Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module">
+  const firebaseConfig = {
+    apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
+    authDomain: "reportactivity-ca50.firebaseapp.com",
+    projectId: "reportactivity-ca50",
+    storageBucket: "reportactivity-ca50.appspot.com",
+    messagingSenderId: "106234023407",
+    appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+  };
 
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // Sign-in anonim
+  signInAnonymously(auth).catch(console.error);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.__FIREBASE_READY__ = true;
+    }
+  });
+
+  // Expose untuk script non-module
+  window._firebase = { db, storage };
+  window._firebaseReady = () => !!window.__FIREBASE_READY__;
+  window._firebaseQuery = { collection, getDocs, query, where, orderBy, addDoc, storageRef, uploadString, getDownloadURL };
+</script>
   <style>
     body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
     .card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
