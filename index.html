@@ -19,13 +19,13 @@
 
     // 2. Firebase config (ISI DENGAN PUNYAMU DARI FIREBASE CONSOLE)
     const firebaseConfig = {
-      apiKey: "API_KEY_KAMU",
-      authDomain: "PROJECT_ID.firebaseapp.com",
-      projectId: "PROJECT_ID",
-      storageBucket: "PROJECT_ID.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
-    };
+    apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
+    authDomain: "reportactivity-ca50.firebaseapp.com",
+    projectId: "reportactivity-ca50",
+    storageBucket: "reportactivity-ca50.appspot.com",
+    messagingSenderId: "106234023407",
+    appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+  };
 
     // 3. Init Firebase
     const app = initializeApp(firebaseConfig);
@@ -37,7 +37,12 @@
     signInAnonymously(auth)
       .then(() => console.log("✅ Login anonymous sukses"))
       .catch((err) => console.error("❌ Login gagal:", err));
-
+    
+// Expose untuk script non-module
+  window._firebase = { db, storage };
+  window._firebaseReady = () => !!window.__FIREBASE_READY__;
+  window._firebaseQuery = { collection, getDocs, query, where, orderBy, addDoc, storageRef, uploadString, getDownloadURL };
+  
     // 5. Fungsi upload
     window.uploadFile = async function () {
       const fileInput = document.getElementById("fileInput");
