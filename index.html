@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
-/* --- Semua CSS tetap sama seperti sebelumnya --- */
+/* --- CSS sama persis seperti sebelumnya --- */
 body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
 .card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
 h1,h2 { text-align:center; margin:8px 0; }
@@ -118,12 +118,7 @@ footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; c
 <footer>JAGA SELALU INTEGRITAS DAN KERJA SAMA TIM</footer>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
-
-// --- Firebase Config ---
+// --- Firebase config ---
 const firebaseConfig = {
 apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
 authDomain: "reportactivity-ca50.firebaseapp.com",
@@ -133,15 +128,23 @@ messagingSenderId: "106234023407",
 appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
 };
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+
+// --- Init Firebase ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+let firebaseReady = false;
 
-let currentCategory="";
-let firebaseReady=false;
+// --- Anonymous Sign-in ---
+signInAnonymously(auth).catch(console.error);
+onAuthStateChanged(auth, user => { if(user) firebaseReady=true; });
 
-// --- Deklarasi elemen ---
+// --- Elements ---
 const menu = document.getElementById("menu");
 const categoryPage = document.getElementById("categoryPage");
 const rekapPage = document.getElementById("rekapPage");
@@ -156,18 +159,27 @@ expired: "📅 EXPIRED",
 so_partial: "📋 SO PARTIAL"
 };
 
-// --- Firebase Anonymous Sign-in ---
-signInAnonymously(auth).catch(console.error);
-onAuthStateChanged(auth,user=>{
-  if(user){firebaseReady=true; if(currentCategory) renderReports();}
-});
+let currentCategory="";
+
+// --- Global functions untuk tombol ---
+window.openCategory = async function(cat){
+currentCategory=cat;
+if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;}
+menu.style.display="none"; categoryPage.style.display="block"; rekapPage.style.display="none"; archivePage.style.display="none";
+document.getElementById("categoryTitle").innerText = titleMap[cat]||cat;
+renderReports();
+};
+
+window.openRekap = function(){ menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="block"; archivePage.style.display="none"; renderRekap(); };
+window.openArchive = function(){ menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="block"; renderArchive(); };
+window.goBack = function(){ menu.style.display="block"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="none"; };
 
 // --- Upload ---
-async function saveReport(){
+window.saveReport = async function(){
 if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;}
-const files=document.getElementById("imageInput").files;
-const personil=document.getElementById("personilSelect").value;
-const shift=document.getElementById("shiftSelect").value;
+const files = document.getElementById("imageInput").files;
+const personil = document.getElementById("personilSelect").value;
+const shift = document.getElementById("shiftSelect").value;
 if(!files.length){alert("Pilih foto dulu!"); return;}
 
 Array.from(files).forEach(file=>{
@@ -178,7 +190,7 @@ Array.from(files).forEach(file=>{
     err=>alert("Upload gagal: "+err.message),
     async ()=>{
       const url = await getDownloadURL(uploadTask.snapshot.ref);
-      const now=new Date();
+      const now = new Date();
       const tanggal = now.toLocaleDateString("id-ID");
       const jam = now.toLocaleTimeString("id-ID",{hour:'2-digit',minute:'2-digit'});
       await addDoc(collection(db,"uploads"),{
@@ -192,13 +204,13 @@ Array.from(files).forEach(file=>{
     }
   );
 });
-}
+};
 
 // --- Render Preview ---
 async function renderReports(){
-if(!firebaseReady) return;
+if(!firebaseReady || !currentCategory) return;
 const container = document.getElementById("reports"); container.innerHTML="";
-const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const q = query(collection(db,"uploads"), orderBy("date","desc"));
 const snapshot = await getDocs(q);
 snapshot.forEach(doc=>{
   const r=doc.data();
@@ -217,7 +229,7 @@ if(!firebaseReady) return;
 const container=document.getElementById("rekapTable");
 const summaryDiv=document.getElementById("rekapSummary");
 container.innerHTML=""; summaryDiv.innerHTML="";
-const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const q=query(collection(db,"uploads"), orderBy("date","desc"));
 const snapshot=await getDocs(q);
 let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
 let summary={};
@@ -230,7 +242,6 @@ snapshot.forEach(doc=>{
 });
 html+="</table>"; container.innerHTML=html;
 
-// Ringkasan per personil
 let summaryHtml="<h3 style='text-align:center;margin-top:20px;'>📊 Rekap Total Per Personil</h3>";
 summaryHtml+="<div class='table-wrapper'><table class='summary-table'><tr><th>Personil</th>";
 for(const cat in titleMap) summaryHtml+=`<th>${titleMap[cat]}</th>`;
@@ -255,7 +266,7 @@ const monthInput=document.getElementById("archiveMonth").value;
 const container=document.getElementById("archiveTable");
 if(!monthInput){container.innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>"; return;}
 const [year,month]=monthInput.split("-");
-const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const q=query(collection(db,"uploads"), orderBy("date","desc"));
 const snapshot=await getDocs(q);
 let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
 let found=false;
@@ -272,19 +283,12 @@ container.innerHTML=found?html:"<p style='text-align:center;'>Tidak ada data pad
 }
 
 // --- Toast ---
-function showToast(){const t=document.getElementById("toast");t.style.display="block";setTimeout(()=>{t.style.display="none";},2000);}
-
-// --- Menu ---
-function openCategory(cat){currentCategory=cat; if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;} menu.style.display="none"; categoryPage.style.display="block"; rekapPage.style.display="none"; archivePage.style.display="none"; document.getElementById("categoryTitle").innerText=titleMap[cat]||cat; renderReports();}
-function openRekap(){menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="block"; archivePage.style.display="none"; renderRekap();}
-function openArchive(){menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="block";}
-function goBack(){menu.style.display="block"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="none";}
-function resetData(){alert("Hapus data harus manual di Firebase Console.");}
+function showToast(){ const t=document.getElementById("toast"); t.style.display="block"; setTimeout(()=>{t.style.display="none";},2000); }
 
 // --- Export Excel ---
-async function exportExcel(){
+window.exportExcel = async function(){
 if(!firebaseReady) return;
-const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const q=query(collection(db,"uploads"), orderBy("date","desc"));
 const snapshot=await getDocs(q);
 let dataDetail=[["Personil","Kategori","Shift","Tanggal","Jam","Foto (link)"]];
 snapshot.forEach(doc=>{
@@ -297,15 +301,19 @@ XLSX.utils.book_append_sheet(wb,ws1,"Detail Upload");
 XLSX.writeFile(wb,"Rekap_Daily_Activity.xlsx");
 }
 
-// --- Real-time Listener ---
+// --- Reset ---
+window.resetData = function(){alert("Hapus data harus manual di Firebase Console."); }
+
+// --- Real-time listener ---
 const uploadsCol=collection(db,"uploads");
-const uploadsQuery=query(uploadsCol,orderBy("date","desc"));
+const uploadsQuery=query(uploadsCol, orderBy("date","desc"));
 onSnapshot(uploadsQuery,snapshot=>{
+if(firebaseReady){
   if(currentCategory) renderReports();
   if(rekapPage.style.display==="block") renderRekap();
   if(archivePage.style.display==="block") renderArchive();
+}
 });
-
 </script>
 </body>
 </html>
