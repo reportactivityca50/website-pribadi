@@ -7,7 +7,6 @@
 
 <!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-<!-- SheetJS untuk Export Excel -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -51,69 +50,68 @@ footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; c
 </head>
 <body>
 
-<!-- Judul, menu, kategori, rekap, arsip, toast, footer tetap sama -->
 <div class="brand-title">ENER<span class="red">O</span>J<span class="mirror">E</span></div>
 <h1>📊 Rekap Daily Activity</h1>
 
 <div id="menu" class="card">
-  <h2>Pilih Menu</h2>
-  <div class="menu-grid">
-    <button class="btn-planogram" onclick="openCategory('planogram')">📌 PLANOGRAM</button>
-    <button class="btn-rak" onclick="openCategory('rak')">🧹 KEBERSIHAN RAK</button>
-    <button class="btn-gudang" onclick="openCategory('gudang')">📦 GUDANG</button>
-    <button class="btn-display" onclick="openCategory('display')">🛒 FULL DISPLAY</button>
-    <button class="btn-expired" onclick="openCategory('expired')">📅 EXPIRED</button>
-    <button class="btn-so" onclick="openCategory('so_partial')">📋 SO PARTIAL</button>
-    <button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
-    <button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
-    <button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
-  </div>
+<h2>Pilih Menu</h2>
+<div class="menu-grid">
+<button class="btn-planogram" onclick="openCategory('planogram')">📌 PLANOGRAM</button>
+<button class="btn-rak" onclick="openCategory('rak')">🧹 KEBERSIHAN RAK</button>
+<button class="btn-gudang" onclick="openCategory('gudang')">📦 GUDANG</button>
+<button class="btn-display" onclick="openCategory('display')">🛒 FULL DISPLAY</button>
+<button class="btn-expired" onclick="openCategory('expired')">📅 EXPIRED</button>
+<button class="btn-so" onclick="openCategory('so_partial')">📋 SO PARTIAL</button>
+<button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
+<button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
+<button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
+</div>
 </div>
 
 <div id="categoryPage" class="card" style="display:none;">
-  <h2 id="categoryTitle">Kategori</h2>
-  <div class="form-upload">
-    <label>Pilih Personil:</label>
-    <select id="personilSelect">
-      <option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
-    </select>
-    <label>Pilih Shift:</label>
-    <select id="shiftSelect">
-      <option>Shift 1</option><option>Shift 2</option>
-    </select>
-    <label>Upload Foto:</label>
-    <input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
-  </div>
-  <div class="action-row">
-    <button class="btn-back" onclick="goBack()">⬅️ Back</button>
-    <button class="btn-send" onclick="saveReport()">📤 Kirim</button>
-  </div>
-  <h3>Preview Upload</h3>
-  <div id="reports"></div>
+<h2 id="categoryTitle">Kategori</h2>
+<div class="form-upload">
+<label>Pilih Personil:</label>
+<select id="personilSelect">
+<option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
+</select>
+<label>Pilih Shift:</label>
+<select id="shiftSelect">
+<option>Shift 1</option><option>Shift 2</option>
+</select>
+<label>Upload Foto:</label>
+<input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
+</div>
+<div class="action-row">
+<button class="btn-back" onclick="goBack()">⬅️ Back</button>
+<button class="btn-send" onclick="saveReport()">📤 Kirim</button>
+</div>
+<h3>Preview Upload</h3>
+<div id="reports"></div>
 </div>
 
 <div id="rekapPage" class="card" style="display:none;">
-  <h2>📑 Rekapan Upload Personil</h2>
-  <div class="table-wrapper"><div id="rekapTable"></div></div>
-  <div id="rekapSummary"></div>
-  <div style="text-align:center; margin:15px 0;">
-    <button class="btn-send" onclick="exportExcel()">📥 Export Excel</button>
-  </div>
-  <div style="text-align:center; margin-top:15px;">
-    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-  </div>
+<h2>📑 Rekapan Upload Personil</h2>
+<div class="table-wrapper"><div id="rekapTable"></div></div>
+<div id="rekapSummary"></div>
+<div style="text-align:center; margin:15px 0;">
+<button class="btn-send" onclick="exportExcel()">📥 Export Excel</button>
+</div>
+<div style="text-align:center; margin-top:15px;">
+<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+</div>
 </div>
 
 <div id="archivePage" class="card" style="display:none;">
-  <h2>📂 Arsip Bulanan</h2>
-  <div style="text-align:center; margin:10px 0;">
-    <label>Pilih Bulan:</label>
-    <input type="month" id="archiveMonth" onchange="renderArchive()">
-  </div>
-  <div class="table-wrapper"><div id="archiveTable"></div></div>
-  <div style="text-align:center; margin-top:15px;">
-    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-  </div>
+<h2>📂 Arsip Bulanan</h2>
+<div style="text-align:center; margin:10px 0;">
+<label>Pilih Bulan:</label>
+<input type="month" id="archiveMonth" onchange="renderArchive()">
+</div>
+<div class="table-wrapper"><div id="archiveTable"></div></div>
+<div style="text-align:center; margin-top:15px;">
+<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+</div>
 </div>
 
 <div id="toast"><div class="circle"><span>✔</span></div><p>Berhasil</p></div>
@@ -125,13 +123,14 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gsta
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
+// --- Firebase Config ---
 const firebaseConfig = {
-  apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
-  authDomain: "reportactivity-ca50.firebaseapp.com",
-  projectId: "reportactivity-ca50",
-  storageBucket: "reportactivity-ca50.appspot.com",
-  messagingSenderId: "106234023407",
-  appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
+authDomain: "reportactivity-ca50.firebaseapp.com",
+projectId: "reportactivity-ca50",
+storageBucket: "reportactivity-ca50.appspot.com",
+messagingSenderId: "106234023407",
+appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -142,132 +141,141 @@ const storage = getStorage(app);
 let currentCategory="";
 let firebaseReady=false;
 
-signInAnonymously(auth).catch(console.error);
-onAuthStateChanged(auth,user=>{if(user){firebaseReady=true; if(currentCategory) renderReports();}});
+// --- Deklarasi elemen ---
+const menu = document.getElementById("menu");
+const categoryPage = document.getElementById("categoryPage");
+const rekapPage = document.getElementById("rekapPage");
+const archivePage = document.getElementById("archivePage");
 
 const titleMap = {
-  planogram: "📌 PLANOGRAM",
-  rak: "🧹 KEBERSIHAN RAK",
-  gudang: "📦 GUDANG",
-  display: "🛒 FULL DISPLAY",
-  expired: "📅 EXPIRED",
-  so_partial: "📋 SO PARTIAL"
+planogram: "📌 PLANOGRAM",
+rak: "🧹 KEBERSIHAN RAK",
+gudang: "📦 GUDANG",
+display: "🛒 FULL DISPLAY",
+expired: "📅 EXPIRED",
+so_partial: "📋 SO PARTIAL"
 };
+
+// --- Firebase Anonymous Sign-in ---
+signInAnonymously(auth).catch(console.error);
+onAuthStateChanged(auth,user=>{
+  if(user){firebaseReady=true; if(currentCategory) renderReports();}
+});
 
 // --- Upload ---
 async function saveReport(){
-  if(!firebaseReady) return alert("Firebase belum siap!");
-  const files=document.getElementById("imageInput").files;
-  const personil=document.getElementById("personilSelect").value;
-  const shift=document.getElementById("shiftSelect").value;
-  if(!files.length){alert("Pilih foto dulu!"); return;}
+if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;}
+const files=document.getElementById("imageInput").files;
+const personil=document.getElementById("personilSelect").value;
+const shift=document.getElementById("shiftSelect").value;
+if(!files.length){alert("Pilih foto dulu!"); return;}
 
-  Array.from(files).forEach(file=>{
-    const fileName = Date.now()+"_"+file.name;
-    const fileRef = storageRef(storage,"uploads/"+fileName);
-    const uploadTask = uploadBytesResumable(fileRef,file);
-    uploadTask.on('state_changed', null,
-      err=>alert("Upload gagal: "+err.message),
-      async ()=>{
-        const url = await getDownloadURL(uploadTask.snapshot.ref);
-        const now=new Date();
-        const tanggal = now.toLocaleDateString("id-ID");
-        const jam = now.toLocaleTimeString("id-ID",{hour:'2-digit',minute:'2-digit'});
-        await addDoc(collection(db,"uploads"),{
-          personil, shift, category: currentCategory,
-          date: tanggal, time: jam,
-          imageUrl: url
-        });
-        showToast();
-        renderReports();
-        document.getElementById("imageInput").value="";
-      }
-    );
-  });
+Array.from(files).forEach(file=>{
+  const fileName = Date.now()+"_"+file.name;
+  const fileRef = storageRef(storage,"uploads/"+fileName);
+  const uploadTask = uploadBytesResumable(fileRef,file);
+  uploadTask.on('state_changed', null,
+    err=>alert("Upload gagal: "+err.message),
+    async ()=>{
+      const url = await getDownloadURL(uploadTask.snapshot.ref);
+      const now=new Date();
+      const tanggal = now.toLocaleDateString("id-ID");
+      const jam = now.toLocaleTimeString("id-ID",{hour:'2-digit',minute:'2-digit'});
+      await addDoc(collection(db,"uploads"),{
+        personil, shift, category: currentCategory,
+        date: tanggal, time: jam,
+        imageUrl: url
+      });
+      showToast();
+      renderReports();
+      document.getElementById("imageInput").value="";
+    }
+  );
+});
 }
 
 // --- Render Preview ---
 async function renderReports(){
-  if(!firebaseReady) return;
-  const container = document.getElementById("reports"); container.innerHTML="";
-  const q=query(collection(db,"uploads"),orderBy("date","desc"));
-  const snapshot = await getDocs(q);
-  snapshot.forEach(doc=>{
-    const r=doc.data();
-    if(r.category===currentCategory){
-      const box=document.createElement("div");
-      box.className="photo-box";
-      box.innerHTML=`<img src="${r.imageUrl}"><small>${r.personil} (${r.shift})<br>${r.date} ${r.time}</small>`;
-      container.appendChild(box);
-    }
-  });
+if(!firebaseReady) return;
+const container = document.getElementById("reports"); container.innerHTML="";
+const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const snapshot = await getDocs(q);
+snapshot.forEach(doc=>{
+  const r=doc.data();
+  if(r.category===currentCategory){
+    const box=document.createElement("div");
+    box.className="photo-box";
+    box.innerHTML=`<img src="${r.imageUrl}"><small>${r.personil} (${r.shift})<br>${r.date} ${r.time}</small>`;
+    container.appendChild(box);
+  }
+});
 }
 
 // --- Render Rekap ---
 async function renderRekap(){
-  if(!firebaseReady) return;
-  const container=document.getElementById("rekapTable");
-  const summaryDiv=document.getElementById("rekapSummary");
-  container.innerHTML=""; summaryDiv.innerHTML="";
-  const q=query(collection(db,"uploads"),orderBy("date","desc"));
-  const snapshot=await getDocs(q);
-  let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-  let summary={};
-  snapshot.forEach(doc=>{
-    const r=doc.data();
-    html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
-    if(!summary[r.personil]) summary[r.personil]={};
-    if(!summary[r.personil][r.category]) summary[r.personil][r.category]=0;
-    summary[r.personil][r.category]++;
-  });
-  html+="</table>"; container.innerHTML=html;
+if(!firebaseReady) return;
+const container=document.getElementById("rekapTable");
+const summaryDiv=document.getElementById("rekapSummary");
+container.innerHTML=""; summaryDiv.innerHTML="";
+const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const snapshot=await getDocs(q);
+let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
+let summary={};
+snapshot.forEach(doc=>{
+  const r=doc.data();
+  html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
+  if(!summary[r.personil]) summary[r.personil]={};
+  if(!summary[r.personil][r.category]) summary[r.personil][r.category]=0;
+  summary[r.personil][r.category]++;
+});
+html+="</table>"; container.innerHTML=html;
 
-  // Ringkasan per personil
-  let summaryHtml="<h3 style='text-align:center;margin-top:20px;'>📊 Rekap Total Per Personil</h3>";
-  summaryHtml+="<div class='table-wrapper'><table class='summary-table'><tr><th>Personil</th>";
-  for(const cat in titleMap) summaryHtml+=`<th>${titleMap[cat]}</th>`;
-  summaryHtml+="<th>Total</th></tr>";
-  for(const person in summary){
-    let total=0;
-    summaryHtml+=`<tr><td>${person}</td>`;
-    for(const cat in titleMap){
-      const val=summary[person][cat]||0;
-      total+=val;
-      summaryHtml+=`<td>${val}</td>`;
-    }
-    summaryHtml+=`<td>${total}</td></tr>`;
+// Ringkasan per personil
+let summaryHtml="<h3 style='text-align:center;margin-top:20px;'>📊 Rekap Total Per Personil</h3>";
+summaryHtml+="<div class='table-wrapper'><table class='summary-table'><tr><th>Personil</th>";
+for(const cat in titleMap) summaryHtml+=`<th>${titleMap[cat]}</th>`;
+summaryHtml+="<th>Total</th></tr>";
+for(const person in summary){
+  let total=0;
+  summaryHtml+=`<tr><td>${person}</td>`;
+  for(const cat in titleMap){
+    const val=summary[person][cat]||0;
+    total+=val;
+    summaryHtml+=`<td>${val}</td>`;
   }
-  summaryHtml+="</table></div>"; summaryDiv.innerHTML=summaryHtml;
+  summaryHtml+=`<td>${total}</td></tr>`;
+}
+summaryHtml+="</table></div>"; summaryDiv.innerHTML=summaryHtml;
 }
 
 // --- Render Arsip ---
 async function renderArchive(){
-  if(!firebaseReady) return;
-  const monthInput=document.getElementById("archiveMonth").value;
-  const container=document.getElementById("archiveTable");
-  if(!monthInput){container.innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>"; return;}
-  const [year,month]=monthInput.split("-");
-  const q=query(collection(db,"uploads"),orderBy("date","desc"));
-  const snapshot=await getDocs(q);
-  let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-  let found=false;
-  snapshot.forEach(doc=>{
-    const r=doc.data();
-    const [d,m,y]=r.date.split("/");
-    if(y==year && m.padStart(2,"0")==month){
-      found=true;
-      html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
-    }
-  });
-  html+="</table>";
-  container.innerHTML=found?html:"<p style='text-align:center;'>Tidak ada data pada bulan ini.</p>";
+if(!firebaseReady) return;
+const monthInput=document.getElementById("archiveMonth").value;
+const container=document.getElementById("archiveTable");
+if(!monthInput){container.innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>"; return;}
+const [year,month]=monthInput.split("-");
+const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const snapshot=await getDocs(q);
+let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
+let found=false;
+snapshot.forEach(doc=>{
+  const r=doc.data();
+  const [d,m,y]=r.date.split("/");
+  if(y==year && m.padStart(2,"0")==month){
+    found=true;
+    html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
+  }
+});
+html+="</table>";
+container.innerHTML=found?html:"<p style='text-align:center;'>Tidak ada data pada bulan ini.</p>";
 }
 
 // --- Toast ---
 function showToast(){const t=document.getElementById("toast");t.style.display="block";setTimeout(()=>{t.style.display="none";},2000);}
 
 // --- Menu ---
-function openCategory(cat){currentCategory=cat; menu.style.display="none"; categoryPage.style.display="block"; rekapPage.style.display="none"; archivePage.style.display="none"; document.getElementById("categoryTitle").innerText=titleMap[cat]||cat; renderReports();}
+function openCategory(cat){currentCategory=cat; if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;} menu.style.display="none"; categoryPage.style.display="block"; rekapPage.style.display="none"; archivePage.style.display="none"; document.getElementById("categoryTitle").innerText=titleMap[cat]||cat; renderReports();}
 function openRekap(){menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="block"; archivePage.style.display="none"; renderRekap();}
 function openArchive(){menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="block";}
 function goBack(){menu.style.display="block"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="none";}
@@ -275,21 +283,21 @@ function resetData(){alert("Hapus data harus manual di Firebase Console.");}
 
 // --- Export Excel ---
 async function exportExcel(){
-  if(!firebaseReady) return;
-  const q=query(collection(db,"uploads"),orderBy("date","desc"));
-  const snapshot=await getDocs(q);
-  let dataDetail=[["Personil","Kategori","Shift","Tanggal","Jam","Foto (link)"]];
-  snapshot.forEach(doc=>{
-    const r=doc.data();
-    dataDetail.push([r.personil,titleMap[r.category],r.shift,r.date,r.time,r.imageUrl]);
-  });
-  let wb=XLSX.utils.book_new();
-  let ws1=XLSX.utils.aoa_to_sheet(dataDetail);
-  XLSX.utils.book_append_sheet(wb,ws1,"Detail Upload");
-  XLSX.writeFile(wb,"Rekap_Daily_Activity.xlsx");
+if(!firebaseReady) return;
+const q=query(collection(db,"uploads"),orderBy("date","desc"));
+const snapshot=await getDocs(q);
+let dataDetail=[["Personil","Kategori","Shift","Tanggal","Jam","Foto (link)"]];
+snapshot.forEach(doc=>{
+  const r=doc.data();
+  dataDetail.push([r.personil,titleMap[r.category],r.shift,r.date,r.time,r.imageUrl]);
+});
+let wb=XLSX.utils.book_new();
+let ws1=XLSX.utils.aoa_to_sheet(dataDetail);
+XLSX.utils.book_append_sheet(wb,ws1,"Detail Upload");
+XLSX.writeFile(wb,"Rekap_Daily_Activity.xlsx");
 }
 
-// --- Firestore Real-time Listener ---
+// --- Real-time Listener ---
 const uploadsCol=collection(db,"uploads");
 const uploadsQuery=query(uploadsCol,orderBy("date","desc"));
 onSnapshot(uploadsQuery,snapshot=>{
@@ -301,4 +309,3 @@ onSnapshot(uploadsQuery,snapshot=>{
 </script>
 </body>
 </html>
-
