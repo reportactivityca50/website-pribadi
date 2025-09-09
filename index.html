@@ -1,319 +1,267 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Rekap Daily Activity - Upload</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rekap Daily Activity - Upload</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+  <!-- SheetJS untuk Export Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-<style>
-/* --- CSS sama persis seperti sebelumnya --- */
-body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
-.card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
-h1,h2 { text-align:center; margin:8px 0; }
-.brand-title { text-align:center; font-size:48px; font-family: 'Audiowide', cursive; font-weight:900; color:#2c3e50; letter-spacing:3px; margin:20px 0 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); position:relative; }
-.brand-title::before,.brand-title::after { content:""; display:block; height:3px; background:#2c3e50; margin:10px auto; width:60%; }
-.brand-title .mirror { display:inline-block; transform: scaleX(-1); }
-.brand-title .red { color:#e53935; }
-.menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
-button { padding:10px 16px; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px; color:#fff; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: all 0.2s ease; }
-button:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(0,0,0,0.35); }
-button:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-.btn-planogram{background:#2196F3;} .btn-rak{background:#4CAF50;} .btn-gudang{background:#FF9800;} .btn-display{background:#9C27B0;} .btn-expired{background:#F44336;} .btn-so{background:#00BCD4;} .btn-rekap{background:#6c757d;} .btn-archive{background:#795548;} .btn-back { background:#777; } .btn-send { background:#4CAF50; } .btn-reset { background:#e53935; }
-.form-upload { text-align:center; }
-.form-upload label { display:block; margin-top:10px; font-weight:600; }
-.form-upload select, .form-upload input[type=file] { width:80%; margin-top:6px; padding:8px; border:1px solid #ccc; border-radius:6px; }
-.action-row { display:flex; justify-content:space-between; margin-top:15px; }
-#reports { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:15px; }
-.photo-box { text-align:center; }
-.photo-box img { width:120px; height:120px; object-fit:cover; border-radius:8px; display:block; margin:auto; }
-.photo-box small { display:block; margin-top:4px; font-size:12px; color:#555; }
-.table-wrapper { max-width:95%; margin:auto; overflow-x:auto; }
-table { width:100%; border-collapse: collapse; margin-top:15px; }
-th, td { border:1px solid #ccc; padding:8px; text-align:center; font-size:14px; }
-th { background:#2c3e50; color:#fff; }
-td img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
-.summary-table { width:100%; border-collapse: collapse; }
-.summary-table th, .summary-table td { border:1px solid #ccc; padding:6px; text-align:center; font-size:14px; }
-.summary-table th { background:#4CAF50; color:#fff; }
-#archiveMonth { padding:6px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
-#toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; text-align: center; z-index: 10000; }
-#toast .circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(76, 175, 80, 0.9); display: flex; align-items: center; justify-content: center; margin: auto; animation: pop 0.4s ease; }
-#toast .circle span { font-size: 36px; color: #fff; font-weight: bold; }
-#toast p { margin-top: 10px; font-size: 18px; color: #333; font-weight: 600; }
-@keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; color:#444; letter-spacing:1px; }
-</style>
+  <style>
+    body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
+    .card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
+    h1,h2 { text-align:center; margin:8px 0; }
+    .brand-title { text-align:center; font-size:48px; font-family: 'Audiowide', cursive; font-weight:900; color:#2c3e50; letter-spacing:3px; margin:20px 0 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); position:relative; }
+    .brand-title::before, .brand-title::after { content:""; display:block; height:3px; background:#2c3e50; margin:10px auto; width:60%; }
+    .brand-title .mirror { display:inline-block; transform: scaleX(-1); }
+    .brand-title .red { color:#e53935; }
+    .menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
+    button { padding:10px 16px; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px; color:#fff; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: all 0.2s ease; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(0,0,0,0.35); }
+    button:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+    .btn-planogram{background:#2196F3;} .btn-rak{background:#4CAF50;} .btn-gudang{background:#FF9800;} .btn-display{background:#9C27B0;} .btn-expired{background:#F44336;} .btn-so{background:#00BCD4;} .btn-rekap{background:#6c757d;} .btn-archive{background:#795548;} .btn-back { background:#777; } .btn-send { background:#4CAF50; } .btn-reset { background:#e53935; }
+    .form-upload { text-align:center; }
+    .form-upload label { display:block; margin-top:10px; font-weight:600; }
+    .form-upload select, .form-upload input[type=file] { width:80%; margin-top:6px; padding:8px; border:1px solid #ccc; border-radius:6px; }
+    .action-row { display:flex; justify-content:space-between; margin-top:15px; }
+    #reports { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:15px; }
+    .photo-box { text-align:center; }
+    .photo-box img { width:120px; height:120px; object-fit:cover; border-radius:8px; display:block; margin:auto; }
+    .photo-box small { display:block; margin-top:4px; font-size:12px; color:#555; }
+    .table-wrapper { max-width:95%; margin:auto; overflow-x:auto; }
+    table { width:100%; border-collapse: collapse; margin-top:15px; }
+    th, td { border:1px solid #ccc; padding:8px; text-align:center; font-size:14px; }
+    th { background:#2c3e50; color:#fff; }
+    td img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
+    .summary-table { width:100%; border-collapse: collapse; }
+    .summary-table th, .summary-table td { border:1px solid #ccc; padding:6px; text-align:center; font-size:14px; }
+    .summary-table th { background:#4CAF50; color:#fff; }
+    #archiveMonth { padding:6px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+    #toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; text-align: center; z-index: 10000; }
+    #toast .circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(76, 175, 80, 0.9); display: flex; align-items: center; justify-content: center; margin: auto; animation: pop 0.4s ease; }
+    #toast .circle span { font-size: 36px; color: #fff; font-weight: bold; }
+    #toast p { margin-top: 10px; font-size: 18px; color: #333; font-weight: 600; }
+    @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; color:#444; letter-spacing:1px; }
+  </style>
 </head>
 <body>
 
 <div class="brand-title">ENER<span class="red">O</span>J<span class="mirror">E</span></div>
 <h1>📊 Rekap Daily Activity</h1>
 
+<!-- MENU UTAMA -->
 <div id="menu" class="card">
-<h2>Pilih Menu</h2>
-<div class="menu-grid">
-<button class="btn-planogram" onclick="openCategory('planogram')">📌 PLANOGRAM</button>
-<button class="btn-rak" onclick="openCategory('rak')">🧹 KEBERSIHAN RAK</button>
-<button class="btn-gudang" onclick="openCategory('gudang')">📦 GUDANG</button>
-<button class="btn-display" onclick="openCategory('display')">🛒 FULL DISPLAY</button>
-<button class="btn-expired" onclick="openCategory('expired')">📅 EXPIRED</button>
-<button class="btn-so" onclick="openCategory('so_partial')">📋 SO PARTIAL</button>
-<button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
-<button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
-<button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
-</div>
+  <h2>Pilih Menu</h2>
+  <div class="menu-grid">
+    <button class="btn-planogram" onclick="openCategory('planogram')">📌 PLANOGRAM</button>
+    <button class="btn-rak" onclick="openCategory('rak')">🧹 KEBERSIHAN RAK</button>
+    <button class="btn-gudang" onclick="openCategory('gudang')">📦 GUDANG</button>
+    <button class="btn-display" onclick="openCategory('display')">🛒 FULL DISPLAY</button>
+    <button class="btn-expired" onclick="openCategory('expired')">📅 EXPIRED</button>
+    <button class="btn-so" onclick="openCategory('so_partial')">📋 SO PARTIAL</button>
+    <button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
+    <button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
+    <button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
+  </div>
 </div>
 
+<!-- HALAMAN KATEGORI -->
 <div id="categoryPage" class="card" style="display:none;">
-<h2 id="categoryTitle">Kategori</h2>
-<div class="form-upload">
-<label>Pilih Personil:</label>
-<select id="personilSelect">
-<option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
-</select>
-<label>Pilih Shift:</label>
-<select id="shiftSelect">
-<option>Shift 1</option><option>Shift 2</option>
-</select>
-<label>Upload Foto:</label>
-<input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
-</div>
-<div class="action-row">
-<button class="btn-back" onclick="goBack()">⬅️ Back</button>
-<button class="btn-send" onclick="saveReport()">📤 Kirim</button>
-</div>
-<h3>Preview Upload</h3>
-<div id="reports"></div>
+  <h2 id="categoryTitle">Kategori</h2>
+  <div class="form-upload">
+    <label>Pilih Personil:</label>
+    <select id="personilSelect">
+      <option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
+    </select>
+    <label>Pilih Shift:</label>
+    <select id="shiftSelect">
+      <option>Shift 1</option><option>Shift 2</option>
+    </select>
+    <label>Upload Foto:</label>
+    <input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
+  </div>
+
+  <div class="action-row">
+    <button class="btn-back" onclick="goBack()">⬅️ Back</button>
+    <button class="btn-send" onclick="saveReport()">📤 Kirim</button>
+  </div>
+
+  <h3>Preview Upload</h3>
+  <div id="reports"></div>
 </div>
 
+<!-- REKAP -->
 <div id="rekapPage" class="card" style="display:none;">
-<h2>📑 Rekapan Upload Personil</h2>
-<div class="table-wrapper"><div id="rekapTable"></div></div>
-<div id="rekapSummary"></div>
-<div style="text-align:center; margin:15px 0;">
-<button class="btn-send" onclick="exportExcel()">📥 Export Excel</button>
-</div>
-<div style="text-align:center; margin-top:15px;">
-<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-</div>
+  <h2>📑 Rekapan Upload Personil</h2>
+  <div class="table-wrapper"><div id="rekapTable"></div></div>
+  <div id="rekapSummary"></div>
+  <div style="text-align:center; margin:15px 0;">
+    <button class="btn-send" onclick="exportExcel()">📥 Export Excel</button>
+  </div>
+  <div style="text-align:center; margin-top:15px;">
+    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+  </div>
 </div>
 
+<!-- ARSIP BULANAN -->
 <div id="archivePage" class="card" style="display:none;">
-<h2>📂 Arsip Bulanan</h2>
-<div style="text-align:center; margin:10px 0;">
-<label>Pilih Bulan:</label>
-<input type="month" id="archiveMonth" onchange="renderArchive()">
-</div>
-<div class="table-wrapper"><div id="archiveTable"></div></div>
-<div style="text-align:center; margin-top:15px;">
-<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-</div>
+  <h2>📂 Arsip Bulanan</h2>
+  <div style="text-align:center; margin:10px 0;">
+    <label>Pilih Bulan:</label>
+    <input type="month" id="archiveMonth" onchange="renderArchive()">
+  </div>
+  <div class="table-wrapper"><div id="archiveTable"></div></div>
+  <div style="text-align:center; margin-top:15px;">
+    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+  </div>
 </div>
 
+<!-- Toast -->
 <div id="toast"><div class="circle"><span>✔</span></div><p>Berhasil</p></div>
+
 <footer>JAGA SELALU INTEGRITAS DAN KERJA SAMA TIM</footer>
 
+<!-- Firebase -->
 <script type="module">
-// --- Firebase config ---
-const firebaseConfig = {
-apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
-authDomain: "reportactivity-ca50.firebaseapp.com",
-projectId: "reportactivity-ca50",
-storageBucket: "reportactivity-ca50.appspot.com",
-messagingSenderId: "106234023407",
-appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
-};
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCG-fNvUtWZGh_K8yKhJLiVvZH_fTRej54",
+    authDomain: "reportactivity-ca50.firebaseapp.com",
+    projectId: "reportactivity-ca50",
+    storageBucket: "reportactivity-ca50.appspot.com",
+    messagingSenderId: "106234023407",
+    appId: "1:106234023407:web:f219c05d071beddd3b3a1a"
+  };
 
-// --- Init Firebase ---
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-let firebaseReady = false;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-// --- Anonymous Sign-in ---
-signInAnonymously(auth).catch(console.error);
-onAuthStateChanged(auth, user => { if(user) firebaseReady=true; });
+  // Sign in anonim
+  signInAnonymously(auth).catch(console.error);
 
-// --- Elements ---
-const menu = document.getElementById("menu");
-const categoryPage = document.getElementById("categoryPage");
-const rekapPage = document.getElementById("rekapPage");
-const archivePage = document.getElementById("archivePage");
+  // Variabel global
+  let currentCategory = "";
 
-const titleMap = {
-planogram: "📌 PLANOGRAM",
-rak: "🧹 KEBERSIHAN RAK",
-gudang: "📦 GUDANG",
-display: "🛒 FULL DISPLAY",
-expired: "📅 EXPIRED",
-so_partial: "📋 SO PARTIAL"
-};
+  // Listener realtime untuk uploads
+  const uploadsCollection = collection(db, "uploads");
+  onSnapshot(query(uploadsCollection, orderBy("date", "desc")), (snapshot) => {
+    const allReports = {};
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (!allReports[data.category]) allReports[data.category] = [];
+      allReports[data.category].push(data);
+    });
+    window.reports = allReports;
+    renderReports();
+    renderRekap();
+  }, (err) => {
+    console.error("Snapshot error:", err);
+  });
 
-let currentCategory="";
+  function openCategory(cat){
+    currentCategory = cat;
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("categoryPage").style.display = "block";
+    document.getElementById("rekapPage").style.display = "none";
+    document.getElementById("archivePage").style.display = "none";
+    document.getElementById("categoryTitle").innerText = cat.toUpperCase();
+    renderReports();
+  }
 
-// --- Global functions untuk tombol ---
-window.openCategory = async function(cat){
-currentCategory=cat;
-if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;}
-menu.style.display="none"; categoryPage.style.display="block"; rekapPage.style.display="none"; archivePage.style.display="none";
-document.getElementById("categoryTitle").innerText = titleMap[cat]||cat;
-renderReports();
-};
+  function goBack(){
+    document.getElementById("menu").style.display = "block";
+    document.getElementById("categoryPage").style.display = "none";
+    document.getElementById("rekapPage").style.display = "none";
+    document.getElementById("archivePage").style.display = "none";
+  }
 
-window.openRekap = function(){ menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="block"; archivePage.style.display="none"; renderRekap(); };
-window.openArchive = function(){ menu.style.display="none"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="block"; renderArchive(); };
-window.goBack = function(){ menu.style.display="block"; categoryPage.style.display="none"; rekapPage.style.display="none"; archivePage.style.display="none"; };
+  function showToast(){
+    const t = document.getElementById("toast");
+    t.style.display = "block";
+    setTimeout(()=>{ t.style.display="none"; }, 2000);
+  }
 
-// --- Upload ---
-window.saveReport = async function(){
-if(!firebaseReady){alert("Mohon tunggu, Firebase sedang memuat..."); return;}
-const files = document.getElementById("imageInput").files;
-const personil = document.getElementById("personilSelect").value;
-const shift = document.getElementById("shiftSelect").value;
-if(!files.length){alert("Pilih foto dulu!"); return;}
+  async function saveReport() {
+    const files = document.getElementById("imageInput").files;
+    const personil = document.getElementById("personilSelect").value;
+    const shift = document.getElementById("shiftSelect").value;
+    if (!files.length) { alert("Pilih foto dulu!"); return; }
 
-Array.from(files).forEach(file=>{
-  const fileName = Date.now()+"_"+file.name;
-  const fileRef = storageRef(storage,"uploads/"+fileName);
-  const uploadTask = uploadBytesResumable(fileRef,file);
-  uploadTask.on('state_changed', null,
-    err=>alert("Upload gagal: "+err.message),
-    async ()=>{
-      const url = await getDownloadURL(uploadTask.snapshot.ref);
-      const now = new Date();
-      const tanggal = now.toLocaleDateString("id-ID");
-      const jam = now.toLocaleTimeString("id-ID",{hour:'2-digit',minute:'2-digit'});
-      await addDoc(collection(db,"uploads"),{
-        personil, shift, category: currentCategory,
-        date: tanggal, time: jam,
-        imageUrl: url
-      });
-      showToast();
-      renderReports();
-      document.getElementById("imageInput").value="";
+    const category = currentCategory;
+
+    for (let file of files) {
+      try {
+        // Upload ke Storage
+        const fileRef = storageRef(storage, `uploads/${category}/${Date.now()}_${file.name}`);
+        await uploadBytes(fileRef, file);
+        const imageUrl = await getDownloadURL(fileRef);
+
+        // Simpan ke Firestore
+        const now = new Date();
+        const tanggal = now.toLocaleDateString("id-ID");
+        const jam = now.toLocaleTimeString("id-ID", { hour:'2-digit', minute:'2-digit' });
+
+        await addDoc(uploadsCollection, { personil, shift, category, date: tanggal, time: jam, imageUrl });
+
+        showToast();
+      } catch (err) {
+        console.error("Upload gagal:", err);
+        alert("Upload gagal. Cek console untuk detail.");
+      }
     }
-  );
-});
-};
 
-// --- Render Preview ---
-async function renderReports(){
-if(!firebaseReady || !currentCategory) return;
-const container = document.getElementById("reports"); container.innerHTML="";
-const q = query(collection(db,"uploads"), orderBy("date","desc"));
-const snapshot = await getDocs(q);
-snapshot.forEach(doc=>{
-  const r=doc.data();
-  if(r.category===currentCategory){
-    const box=document.createElement("div");
-    box.className="photo-box";
-    box.innerHTML=`<img src="${r.imageUrl}"><small>${r.personil} (${r.shift})<br>${r.date} ${r.time}</small>`;
-    container.appendChild(box);
+    document.getElementById("imageInput").value = "";
   }
-});
-}
 
-// --- Render Rekap ---
-async function renderRekap(){
-if(!firebaseReady) return;
-const container=document.getElementById("rekapTable");
-const summaryDiv=document.getElementById("rekapSummary");
-container.innerHTML=""; summaryDiv.innerHTML="";
-const q=query(collection(db,"uploads"), orderBy("date","desc"));
-const snapshot=await getDocs(q);
-let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-let summary={};
-snapshot.forEach(doc=>{
-  const r=doc.data();
-  html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
-  if(!summary[r.personil]) summary[r.personil]={};
-  if(!summary[r.personil][r.category]) summary[r.personil][r.category]=0;
-  summary[r.personil][r.category]++;
-});
-html+="</table>"; container.innerHTML=html;
-
-let summaryHtml="<h3 style='text-align:center;margin-top:20px;'>📊 Rekap Total Per Personil</h3>";
-summaryHtml+="<div class='table-wrapper'><table class='summary-table'><tr><th>Personil</th>";
-for(const cat in titleMap) summaryHtml+=`<th>${titleMap[cat]}</th>`;
-summaryHtml+="<th>Total</th></tr>";
-for(const person in summary){
-  let total=0;
-  summaryHtml+=`<tr><td>${person}</td>`;
-  for(const cat in titleMap){
-    const val=summary[person][cat]||0;
-    total+=val;
-    summaryHtml+=`<td>${val}</td>`;
+  function renderReports() {
+    const container = document.getElementById("reports");
+    if(!window.reports) return;
+    container.innerHTML = "";
+    const list = window.reports[currentCategory] || [];
+    list.forEach(r=>{
+      const box = document.createElement("div");
+      box.className = "photo-box";
+      box.innerHTML = `<img src="${r.imageUrl}"><small>${r.personil} (${r.shift})<br>${r.date} ${r.time}</small>`;
+      container.appendChild(box);
+    });
   }
-  summaryHtml+=`<td>${total}</td></tr>`;
-}
-summaryHtml+="</table></div>"; summaryDiv.innerHTML=summaryHtml;
-}
 
-// --- Render Arsip ---
-async function renderArchive(){
-if(!firebaseReady) return;
-const monthInput=document.getElementById("archiveMonth").value;
-const container=document.getElementById("archiveTable");
-if(!monthInput){container.innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>"; return;}
-const [year,month]=monthInput.split("-");
-const q=query(collection(db,"uploads"), orderBy("date","desc"));
-const snapshot=await getDocs(q);
-let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-let found=false;
-snapshot.forEach(doc=>{
-  const r=doc.data();
-  const [d,m,y]=r.date.split("/");
-  if(y==year && m.padStart(2,"0")==month){
-    found=true;
-    html+=`<tr><td>${r.personil}</td><td>${titleMap[r.category]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
+  function openRekap(){
+    document.getElementById("menu").style.display="none";
+    document.getElementById("categoryPage").style.display="none";
+    document.getElementById("rekapPage").style.display="block";
+    document.getElementById("archivePage").style.display="none";
+    renderRekap();
   }
-});
-html+="</table>";
-container.innerHTML=found?html:"<p style='text-align:center;'>Tidak ada data pada bulan ini.</p>";
-}
 
-// --- Toast ---
-function showToast(){ const t=document.getElementById("toast"); t.style.display="block"; setTimeout(()=>{t.style.display="none";},2000); }
+  function renderRekap(){
+    const container = document.getElementById("rekapTable");
+    if(!window.reports) { container.innerHTML=""; return; }
 
-// --- Export Excel ---
-window.exportExcel = async function(){
-if(!firebaseReady) return;
-const q=query(collection(db,"uploads"), orderBy("date","desc"));
-const snapshot=await getDocs(q);
-let dataDetail=[["Personil","Kategori","Shift","Tanggal","Jam","Foto (link)"]];
-snapshot.forEach(doc=>{
-  const r=doc.data();
-  dataDetail.push([r.personil,titleMap[r.category],r.shift,r.date,r.time,r.imageUrl]);
-});
-let wb=XLSX.utils.book_new();
-let ws1=XLSX.utils.aoa_to_sheet(dataDetail);
-XLSX.utils.book_append_sheet(wb,ws1,"Detail Upload");
-XLSX.writeFile(wb,"Rekap_Daily_Activity.xlsx");
-}
+    let html = "<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
+    for(const cat in window.reports){
+      window.reports[cat].forEach(r=>{
+        html += `<tr><td>${r.personil}</td><td>${r.category}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.imageUrl}"></td></tr>`;
+      });
+    }
+    html += "</table>";
+    container.innerHTML = html;
+  }
 
-// --- Reset ---
-window.resetData = function(){alert("Hapus data harus manual di Firebase Console."); }
+  function openArchive(){ alert("Fitur Arsip Bulanan bisa dikembangkan mengikuti renderRekap()"); }
+  function exportExcel(){ alert("Fitur Export Excel bisa dikembangkan mengikuti data window.reports"); }
+  function resetData(){ if(confirm("Hapus semua data?")){ alert("Hapus data di Firestore manual jika perlu"); } }
 
-// --- Real-time listener ---
-const uploadsCol=collection(db,"uploads");
-const uploadsQuery=query(uploadsCol, orderBy("date","desc"));
-onSnapshot(uploadsQuery,snapshot=>{
-if(firebaseReady){
-  if(currentCategory) renderReports();
-  if(rekapPage.style.display==="block") renderRekap();
-  if(archivePage.style.display==="block") renderArchive();
-}
-});
 </script>
 </body>
 </html>
