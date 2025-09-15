@@ -1,429 +1,178 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rekap Daily Activity - Upload</title>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-  <!-- SheetJS untuk Export Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
-  <style>
-    body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
-    .card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
-    h1,h2 { text-align:center; margin:8px 0; }
-
-    /* Judul besar ENEROJƎ */
-    .brand-title {
-      text-align:center;
-      font-size:48px;
-      font-family: 'Audiowide', cursive;
-      font-weight:900;
-      color:#2c3e50;
-      letter-spacing:3px;
-      margin:20px 0 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-      position:relative;
-    }
-    .brand-title::before,
-    .brand-title::after {
-      content:"";
-      display:block;
-      height:3px;
-      background:#2c3e50;
-      margin:10px auto;
-      width:60%;
-    }
-    .brand-title .mirror { display:inline-block; transform: scaleX(-1); }
-    .brand-title .red { color:#e53935; }
-
-    .menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
-
-    /* Tombol 3D */
-    button {
-      padding:10px 16px;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:700;
-      font-size:15px;
-      color:#fff;
-      box-shadow: 0 5px 0 rgba(0,0,0,0.3);
-      transition: all 0.2s ease;
-    }
-    button:hover { transform: translateY(-2px); box-shadow: 0 7px 0 rgba(0,0,0,0.35); }
-    button:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-
-    /* Warna tombol */
-    .btn-planogram{background:#2196F3;} 
-    .btn-rak{background:#4CAF50;} 
-    .btn-gudang{background:#FF9800;} 
-    .btn-display{background:#9C27B0;} 
-    .btn-expired{background:#F44336;} 
-    .btn-so{background:#00BCD4;} 
-    .btn-rekap{background:#6c757d;}
-    .btn-archive{background:#795548;}
-    .btn-back { background:#777; }
-    .btn-send { background:#4CAF50; }
-    .btn-reset { background:#e53935; }
-
-    /* Form rata tengah */
-    .form-upload { text-align:center; }
-    .form-upload label { display:block; margin-top:10px; font-weight:600; }
-    .form-upload select, .form-upload input[type=file] {
-      width:80%; margin-top:6px; padding:8px; border:1px solid #ccc; border-radius:6px;
-    }
-
-    /* Tombol Back & Kirim sejajar */
-    .action-row { display:flex; justify-content:space-between; margin-top:15px; }
-
-    /* Preview foto */
-    #reports { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:15px; }
-    .photo-box { text-align:center; }
-    .photo-box img { width:120px; height:120px; object-fit:cover; border-radius:8px; display:block; margin:auto; }
-    .photo-box small { display:block; margin-top:4px; font-size:12px; color:#555; }
-
-    /* Tabel Rekap & Arsip */
-    .table-wrapper { max-width:95%; margin:auto; overflow-x:auto; }
-    table { width:100%; border-collapse: collapse; margin-top:15px; }
-    th, td { border:1px solid #ccc; padding:8px; text-align:center; font-size:14px; }
-    th { background:#2c3e50; color:#fff; }
-    td img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
-
-    /* Rekap ringkas */
-    .summary-table {
-      width:100%;
-      border-collapse: collapse;
-    }
-    .summary-table th, .summary-table td {
-      border:1px solid #ccc;
-      padding:6px;
-      text-align:center;
-      font-size:14px;
-    }
-    .summary-table th { background:#4CAF50; color:#fff; }
-
-    /* Input bulan */
-    #archiveMonth {
-      padding:6px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      font-size:14px;
-    }
-
-    /* Notifikasi sukses (floating center) */
-    #toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; text-align: center; z-index: 10000; }
-    #toast .circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(76, 175, 80, 0.9); display: flex; align-items: center; justify-content: center; margin: auto; animation: pop 0.4s ease; }
-    #toast .circle span { font-size: 36px; color: #fff; font-weight: bold; }
-    #toast p { margin-top: 10px; font-size: 18px; color: #333; font-weight: 600; }
-    @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-    /* Slogan */
-    footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; color:#444; letter-spacing:1px; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rekap Daily Activity - Upload</title>
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+<style>
+body { font-family: Arial, sans-serif; margin:20px; background:#f2f2f2; color:#222; }
+.card { margin:20px auto; padding:18px; max-width:900px; background:#fff; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
+h1,h2 { text-align:center; margin:8px 0; }
+.brand-title { text-align:center; font-size:48px; font-family: 'Audiowide', cursive; font-weight:900; color:#2c3e50; letter-spacing:3px; margin:20px 0 10px; text-shadow:2px 2px 4px rgba(0,0,0,0.2); position:relative; }
+.brand-title::before,.brand-title::after { content:""; display:block; height:3px; background:#2c3e50; margin:10px auto; width:60%; }
+.brand-title .mirror { display:inline-block; transform: scaleX(-1); }
+.brand-title .red { color:#e53935; }
+.menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
+button { padding:10px 16px; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px; color:#fff; box-shadow:0 5px 0 rgba(0,0,0,0.3); transition:all 0.2s ease; }
+button:hover { transform:translateY(-2px); box-shadow:0 7px 0 rgba(0,0,0,0.35); }
+button:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,0.2); }
+.btn-planogram{background:#2196F3;} .btn-rak{background:#4CAF50;} .btn-gudang{background:#FF9800;} .btn-display{background:#9C27B0;} .btn-expired{background:#F44336;} .btn-so{background:#00BCD4;} .btn-rekap{background:#6c757d;} .btn-archive{background:#795548;} .btn-back { background:#777; } .btn-send { background:#4CAF50; } .btn-reset { background:#e53935; }
+.form-upload { text-align:center; }
+.form-upload label { display:block; margin-top:10px; font-weight:600; }
+.form-upload select, .form-upload input[type=file] { width:80%; margin-top:6px; padding:8px; border:1px solid #ccc; border-radius:6px; }
+.action-row { display:flex; justify-content:space-between; margin-top:15px; }
+#reports { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:15px; }
+.photo-box { text-align:center; }
+.photo-box img { width:120px; height:120px; object-fit:cover; border-radius:8px; display:block; margin:auto; }
+#rekapTable table { width:100%; border-collapse:collapse; margin-top:15px; }
+#rekapTable th, #rekapTable td { border:1px solid #ccc; padding:8px; text-align:center; font-size:14px; }
+footer { text-align:center; margin-top:30px; font-size:16px; font-weight:bold; color:#444; letter-spacing:1px; }
+</style>
 </head>
 <body>
-
-<!-- Judul Utama -->
 <div class="brand-title">ENER<span class="red">O</span>J<span class="mirror">E</span></div>
 <h1>📊 Rekap Daily Activity</h1>
 
-<!-- MENU AWAL -->
+<!-- MENU UTAMA -->
 <div id="menu" class="card">
-  <h2>Pilih Menu</h2>
-  <div class="menu-grid">
-    <button class="btn-planogram" onclick="openCategory('planogram')">📌 PLANOGRAM</button>
-    <button class="btn-rak" onclick="openCategory('rak')">🧹 KEBERSIHAN RAK</button>
-    <button class="btn-gudang" onclick="openCategory('gudang')">📦 GUDANG</button>
-    <button class="btn-display" onclick="openCategory('display')">🛒 FULL DISPLAY</button>
-    <button class="btn-expired" onclick="openCategory('expired')">📅 EXPIRED</button>
-    <button class="btn-so" onclick="openCategory('so_partial')">📋 SO PARTIAL</button>
-    <button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
-    <button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
-    <button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
-  </div>
+<h2>Pilih Menu</h2>
+<div class="menu-grid">
+<button class="btn-planogram" onclick="openCategory('PLANOGRAM')">📌 PLANOGRAM</button>
+<button class="btn-rak" onclick="openCategory('KEBERSIHAN RAK')">🧹 KEBERSIHAN RAK</button>
+<button class="btn-gudang" onclick="openCategory('GUDANG')">📦 GUDANG</button>
+<button class="btn-display" onclick="openCategory('FULL DISPLAY')">🛒 FULL DISPLAY</button>
+<button class="btn-expired" onclick="openCategory('EXPIRED')">📅 EXPIRED</button>
+<button class="btn-so" onclick="openCategory('SO PARTIAL')">📋 SO PARTIAL</button>
+<button class="btn-rekap" onclick="openRekap()">📑 REKAPAN PERSONIL</button>
+<button class="btn-archive" onclick="openArchive()">📂 Arsip Bulanan</button>
+<button class="btn-reset" onclick="resetData()">🗑️ Hapus Semua Data</button>
+</div>
 </div>
 
-<!-- HALAMAN KATEGORI -->
+<!-- KATEGORI -->
 <div id="categoryPage" class="card" style="display:none;">
-  <h2 id="categoryTitle">Kategori</h2>
-  <div class="form-upload">
-    <label>Pilih Personil:</label>
-    <select id="personilSelect">
-      <option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
-    </select>
-    <label>Pilih Shift:</label>
-    <select id="shiftSelect">
-      <option>Shift 1</option><option>Shift 2</option>
-    </select>
-    <label>Upload Foto:</label>
-    <input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
-  </div>
-
-  <div class="action-row">
-    <button class="btn-back" onclick="goBack()">⬅️ Back</button>
-    <button class="btn-send" onclick="saveReport()">📤 Kirim</button>
-  </div>
-
-  <h3>Preview Upload</h3>
-  <div id="reports"></div>
+<h2 id="categoryTitle">Kategori</h2>
+<div class="form-upload">
+<label>Pilih Personil:</label>
+<select id="personilSelect">
+<option>Salwa</option><option>Dika</option><option>Elis</option><option>Nuri</option>
+</select>
+<label>Pilih Shift:</label>
+<select id="shiftSelect">
+<option>Shift 1</option><option>Shift 2</option>
+</select>
+<label>Upload Foto:</label>
+<input type="file" id="imageInput" accept="image/*" capture="environment" multiple />
+</div>
+<div class="action-row">
+<button class="btn-back" onclick="goBack()">⬅️ Back</button>
+<button class="btn-send" onclick="saveReport()">📤 Kirim</button>
+</div>
+<h3>Preview Upload</h3>
+<div id="reports"></div>
 </div>
 
-<!-- HALAMAN REKAP -->
+<!-- REKAP PERSONIL -->
 <div id="rekapPage" class="card" style="display:none;">
-  <h2>📑 Rekapan Upload Personil</h2>
-  <div class="table-wrapper"><div id="rekapTable"></div></div>
-  <div id="rekapSummary"></div>
-  <div style="text-align:center; margin:15px 0;">
-    <button class="btn-send" onclick="exportExcel()">📥 Export Excel</button>
-  </div>
-  <div style="text-align:center; margin-top:15px;">
-    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-  </div>
+<h2>📑 Rekapan Upload Personil</h2>
+<div id="rekapTable"></div>
+<div style="text-align:center; margin-top:15px;">
+<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+</div>
 </div>
 
-<!-- HALAMAN ARSIP BULANAN -->
+<!-- ARSIP -->
 <div id="archivePage" class="card" style="display:none;">
-  <h2>📂 Arsip Bulanan</h2>
-  <div style="text-align:center; margin:10px 0;">
-    <label>Pilih Bulan:</label>
-    <input type="month" id="archiveMonth" onchange="renderArchive()">
-  </div>
-  <div class="table-wrapper"><div id="archiveTable"></div></div>
-  <div style="text-align:center; margin-top:15px;">
-    <button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
-  </div>
+<h2>📂 Arsip Bulanan</h2>
+<div style="text-align:center; margin:10px 0;">
+<label>Pilih Bulan:</label>
+<input type="month" id="archiveMonth" onchange="renderArchive()">
+</div>
+<div class="table-wrapper"><div id="archiveTable"></div></div>
+<div style="text-align:center; margin-top:15px;">
+<button class="btn-back" onclick="goBack()">⬅️ Back ke Menu Utama</button>
+</div>
 </div>
 
-<!-- Notifikasi sukses -->
-<div id="toast"><div class="circle"><span>✔</span></div><p>Berhasil</p></div>
-
-<!-- Slogan -->
 <footer>JAGA SELALU INTEGRITAS DAN KERJA SAMA TIM</footer>
 
 <script>
-let currentCategory = "";
-let reports = JSON.parse(localStorage.getItem("reports") || "{}");
+// =================== Fungsi Menu ===================
+function openCategory(cat){menu.style.display="none";categoryPage.style.display="block";rekapPage.style.display="none";archivePage.style.display="none";categoryTitle.innerText=cat;renderReports();}
+function openRekap(){menu.style.display="none";categoryPage.style.display="none";rekapPage.style.display="block";archivePage.style.display="none";renderRekap();}
+function openArchive(){menu.style.display="none";categoryPage.style.display="none";rekapPage.style.display="none";archivePage.style.display="block";}
+function goBack(){menu.style.display="block";categoryPage.style.display="none";rekapPage.style.display="none";archivePage.style.display="none";}
 
-const titleMap = {
-  planogram: "📌 PLANOGRAM",
-  rak: "🧹 KEBERSIHAN RAK",
-  gudang: "📦 GUDANG",
-  display: "🛒 FULL DISPLAY",
-  expired: "📅 EXPIRED",
-  so_partial: "📋 SO PARTIAL"
-};
-
-function openCategory(cat){
-  currentCategory = cat;
-  menu.style.display = "none";
-  categoryPage.style.display = "block";
-  rekapPage.style.display = "none";
-  archivePage.style.display = "none";
-  categoryTitle.innerText = titleMap[cat] || cat;
-  renderReports();
-}
-
-function openRekap(){
-  menu.style.display = "none";
-  categoryPage.style.display = "none";
-  rekapPage.style.display = "block";
-  archivePage.style.display = "none";
-  renderRekap();
-}
-
-function openArchive(){
-  menu.style.display = "none";
-  categoryPage.style.display = "none";
-  rekapPage.style.display = "none";
-  archivePage.style.display = "block";
-}
-
-function goBack(){
-  menu.style.display = "block";
-  categoryPage.style.display = "none";
-  rekapPage.style.display = "none";
-  archivePage.style.display = "none";
-}
-
-function showToast(){
-  const t = document.getElementById("toast");
-  t.style.display = "block";
-  setTimeout(()=>{ t.style.display="none"; }, 2000);
-}
-
+// =================== Upload ===================
 function saveReport(){
-  const files = document.getElementById("imageInput").files;
-  const personil = document.getElementById("personilSelect").value;
-  const shift = document.getElementById("shiftSelect").value;
+  const files=document.getElementById("imageInput").files;
+  const personil=document.getElementById("personilSelect").value;
+  const shift=document.getElementById("shiftSelect").value;
+  const category=categoryTitle.innerText;
   if(!files.length){alert("Pilih foto dulu!");return;}
-
-  if(!reports[currentCategory]) reports[currentCategory] = [];
-
-  let processed = 0;
   Array.from(files).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const now = new Date();
-      const tanggal = now.toLocaleDateString("id-ID");
-      const jam = now.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' });
-
-      reports[currentCategory].push({
-        personil, shift, image: e.target.result,
-        date: tanggal, time: jam
-      });
-
-      processed++;
-      renderReports();
-      showToast();
-
-      if(processed === files.length){
-        localStorage.setItem("reports", JSON.stringify(reports));
-        document.getElementById("imageInput").value = ""; // kosongkan hanya sekali
-      }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      google.script.run.withSuccessHandler(res=>{
+        if(res.status==="ok"){renderReports();alert("Upload sukses!");}else{alert("Error: "+res.message);}
+      }).uploadFile(e.target.result,file.name,file.type,personil,shift,category);
     };
     reader.readAsDataURL(file);
   });
 }
+function renderReports(){document.getElementById("reports").innerHTML="";}
 
-
-function renderReports(){
-  const c = document.getElementById("reports");
-  c.innerHTML = "";
-  const list = reports[currentCategory] || [];
-  list.forEach(r=>{
-    const jam = r.time ? r.time : "-";
-    const box = document.createElement("div");
-    box.className = "photo-box";
-    box.innerHTML = `<img src="${r.image}"><small>${r.personil} (${r.shift})<br>${r.date} ${jam}</small>`;
-    c.appendChild(box);
-  });
-}
-
+// =================== REKAP ===================
 function renderRekap(){
-  const container = document.getElementById("rekapTable");
-  container.innerHTML = "";
-  let html = "<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-  for(const cat in reports){
-    (reports[cat] || []).forEach(r=>{
-      html += `<tr><td>${r.personil}</td><td>${titleMap[cat]}</td><td>${r.shift}</td><td>${r.date}</td><td>${r.time}</td><td><img src="${r.image}"></td></tr>`;
+  google.script.run.withSuccessHandler(data=>{
+    const categories=data.categories;
+    const summary=data.summary;
+    let html="<table><tr><th>Personil</th>";
+    categories.forEach(c=>{html+="<th>"+c+"</th>";});
+    html+="<th>Total</th></tr>";
+    summary.forEach(row=>{
+      html+="<tr><td>"+row.personil+"</td>";
+      categories.forEach(c=>{
+        let val=row[c]||0;
+        let color="red";
+        if(val>=1) color="green"; // >=1 upload dianggap 100%
+        html+="<td style='background:"+color+";color:#fff;'>"+val+"</td>";
+      });
+      html+="<td>"+row.total+"</td></tr>";
     });
-  }
-  html += "</table>";
-  container.innerHTML = html;
-  renderSummary();
+    html+="</table>";
+    document.getElementById("rekapTable").innerHTML=html;
+  }).getRekapSummary();
 }
 
-function renderSummary(){
-  const summaryDiv = document.getElementById("rekapSummary");
-  let summary = {};
-  for(const cat in reports){
-    (reports[cat] || []).forEach(r=>{
-      if(!summary[r.personil]) summary[r.personil] = {};
-      if(!summary[r.personil][cat]) summary[r.personil][cat] = 0;
-      summary[r.personil][cat]++;
-    });
-  }
-  let html = "<h3 style='text-align:center;margin-top:20px;'>📊 Rekap Total Per Personil</h3>";
-  html += "<div class='table-wrapper'><table class='summary-table'><tr><th>Personil</th>";
-  for(const cat in titleMap){ html += `<th>${titleMap[cat]}</th>`; }
-  html += "<th>Total</th></tr>";
-  for(const person in summary){
-    let total = 0;
-    html += `<tr><td>${person}</td>`;
-    for(const cat in titleMap){
-      let val = summary[person][cat] || 0;
-      total += val;
-      html += `<td>${val}</td>`;
-    }
-    html += `<td>${total}</td></tr>`;
-  }
-  html += "</table></div>";
-  summaryDiv.innerHTML = html;
-}
-
+// =================== Arsip ===================
 function renderArchive(){
-  const monthInput = document.getElementById("archiveMonth").value;
-  const container = document.getElementById("archiveTable");
-  if(!monthInput){ container.innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>"; return; }
-
-  const [year, month] = monthInput.split("-");
-  let html = "<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th><th>Jam</th><th>Foto</th></tr>";
-  let found = false;
-
-  for(const cat in reports){
-    (reports[cat] || []).forEach(r=>{
-      let [d,m,y] = r.date.split("/");
-      if(y==year && m.padStart(2,"0")==month){
-        found = true;
-        html += `<tr>
-          <td>${r.personil}</td>
-          <td>${titleMap[cat]}</td>
-          <td>${r.shift}</td>
-          <td>${r.date}</td>
-          <td>${r.time}</td>
-          <td><img src="${r.image}"></td>
-        </tr>`;
+  const month=document.getElementById("archiveMonth").value;
+  if(!month){document.getElementById("archiveTable").innerHTML="<p style='text-align:center;'>Silakan pilih bulan.</p>";return;}
+  google.script.run.withSuccessHandler(data=>{
+    let html="<table><tr><th>Personil</th><th>Kategori</th><th>Shift</th><th>Tanggal</th></tr>";
+    let found=false;
+    data.forEach(r=>{
+      const dt=new Date(r.datetime);
+      const m=(dt.getMonth()+1).toString().padStart(2,"0");
+      const y=dt.getFullYear();
+      if(y+"-"+m===month){
+        found=true;
+        html+="<tr><td>"+r.personil+"</td><td>"+r.category+"</td><td>"+r.shift+"</td><td>"+r.datetime+"</td></tr>";
       }
     });
-  }
-
-  html += "</table>";
-  container.innerHTML = found ? html : "<p style='text-align:center;'>Tidak ada data pada bulan ini.</p>";
+    html+="</table>";
+    document.getElementById("archiveTable").innerHTML=found?html:"<p style='text-align:center;'>Tidak ada data pada bulan ini.</p>";
+  }).getAllReports();
 }
 
-function exportExcel(){
-  let wb = XLSX.utils.book_new();
-
-  // Sheet 1: Detail Upload
-  let dataDetail = [["Personil","Kategori","Shift","Tanggal","Jam","Foto (link)"]];
-  for(const cat in reports){
-    (reports[cat] || []).forEach(r=>{
-      dataDetail.push([r.personil, titleMap[cat], r.shift, r.date, r.time, r.image]);
-    });
-  }
-  let ws1 = XLSX.utils.aoa_to_sheet(dataDetail);
-  XLSX.utils.book_append_sheet(wb, ws1, "Detail Upload");
-
-  // Sheet 2: Rekap Per Personil
-  let dataSummary = [["Personil", ...Object.values(titleMap), "Total"]];
-  let summary = {};
-  for(const cat in reports){
-    (reports[cat] || []).forEach(r=>{
-      if(!summary[r.personil]) summary[r.personil] = {};
-      if(!summary[r.personil][cat]) summary[r.personil][cat] = 0;
-      summary[r.personil][cat]++;
-    });
-  }
-  for(const person in summary){
-    let row = [person];
-    let total = 0;
-    for(const cat in titleMap){
-      let val = summary[person][cat] || 0;
-      row.push(val);
-      total += val;
-    }
-    row.push(total);
-    dataSummary.push(row);
-  }
-  let ws2 = XLSX.utils.aoa_to_sheet(dataSummary);
-  XLSX.utils.book_append_sheet(wb, ws2, "Rekap Personil");
-
-  // Simpan file
-  XLSX.writeFile(wb, "Rekap_Daily_Activity.xlsx");
-}
-
+// =================== Reset ===================
 function resetData(){
   if(confirm("Yakin ingin hapus semua data?")){
-    localStorage.clear();
-    reports = {};
-    renderReports();
-    document.getElementById("rekapTable").innerHTML = "";
-    document.getElementById("rekapSummary").innerHTML = "";
-    document.getElementById("archiveTable").innerHTML = "";
-    alert("Semua data berhasil dihapus!");
+    google.script.run.withSuccessHandler(()=>{
+      alert("Semua data berhasil dihapus!");
+    }).resetAllData();
   }
 }
 </script>
