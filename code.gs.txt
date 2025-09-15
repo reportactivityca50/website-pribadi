@@ -1,0 +1,121 @@
+// ===================================================================
+// Google Apps Script untuk Rekap Daily Activity CA50
+// ===================================================================
+
+// Mapping kategori ke ID folder Drive
+const folderMap = {
+  "PLANOGRAM": "16p3r8cb8T-ib5-PuTsF_PAcPlY5K_4ud",
+  "KEBERSIHAN RAK": "1UDAkvnKVJXsBme3rINkqmCjFE7pKEON6",
+  "GUDANG": "1nzdAx9ntnarFNMX3cc462mGLoxKF4S_F",
+  "FULL DISPLAY": "1MNT2GuwCC9gNTAsxHO7PidrpvfdH97dl",
+  "EXPIRED": "1YQPBT2EaA0IFlMDINfJIfM72ETgDzseY",
+  "SO PARTIAL": "1OOZgB1CsCk69fyKdQiPMVucLNxTPr85C"
+};
+
+// ID Spreadsheet
+const SPREADSHEET_ID = "1K87J27SJStIoj-VlzeKAkGrL4nwoPK16vuHNtrzqRfg";
+
+// ===================================================================
+// DO GET - Menampilkan HTML
+// ===================================================================
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile("Index").setTitle("Rekap Daily Activity");
+}
+
+// ===================================================================
+// Upload File ke Drive & catat ke Sheet1
+// ===================================================================
+function uploadFile(base64Data, fileName, mimeType, personil, shift, category) {
+  try {
+    let folderId = folderMap[category];
+    if (!folderId) return {status: "error", message: "Kategori folder tidak ditemukan!"};
+
+    const folder = DriveApp.getFolderById(folderId);
+    const content = Utilities.base64Decode(base64Data);
+    const blob = Utilities.newBlob(content, mimeType, fileName);
+    const file = folder.createFile(blob);
+
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName("Sheet1") || ss.insertSheet("Sheet1");
+
+    // Jika Sheet baru, buat header
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Personil","Shift","Kategori","Link File","Datetime"]);
+    }
+
+    sheet.appendRow([
+      personil,
+      shift,
+      category,
+      file.getUrl(),
+      Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss")
+    ]);
+
+    return {status: "ok", fileUrl: file.getUrl()};
+  } catch (err) {
+    return {status: "error", message: err.message};
+  }
+}
+
+// ===================================================================
+// Ambil Semua Data dari Sheet1
+// ===================================================================
+function getAllReports() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName("Sheet1");
+  if (!sheet) return [];
+
+  const data = sheet.getDataRange().getValues();
+  let reports = [];
+
+  for (let i = 1; i < data.length; i++) {
+    let row = data[i];
+    reports.push({
+      personil: row[0],
+      shift: row[1],
+      category: row[2],
+      fileUrl: row[3],
+      datetime: row[4]
+    });
+  }
+  return reports;
+}
+
+// ===================================================================
+// Hitung Rekap Persentase per Personil bulan berjalan
+// ===================================================================
+function getRekapSummary() {
+  const reports = getAllReports();
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  // Daftar personil & kategori
+  let personilMap = {};
+  const categories = Object.keys(folderMap);
+
+  reports.forEach(r => {
+    const dt = new Date(r.datetime);
+    if (dt.getMonth()+1 === currentMonth && dt.getFullYear() === currentYear) {
+      if (!personilMap[r.personil]) personilMap[r.personil] = {};
+      if (!personilMap[r.personil][r.category]) personilMap[r.personil][r.category] = 0;
+      personilMap[r.personil][r.category]++;
+    }
+  });
+
+  // Hitung persentase (1 upload / 1 target per kategori dianggap 100%)
+  let summary = [];
+  for (let person in personilMap) {
+    let row = {personil: person, total: 0};
+    let totalCount = 0;
+    categories.forEach(cat => {
+      const val = personilMap[person][cat] || 0;
+      row[cat] = val;
+      totalCount += val;
+    });
+    row.total = totalCount;
+    summary.push(row);
+  }
+
+  return {categories, summary};
+}
